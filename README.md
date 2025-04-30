@@ -70,5 +70,5 @@ Este sistema es ideal como base para proyectos académicos, evaluación de habil
 
 ## 📁 Autor
 
-Desarrollado por **Andrea Roa**  
+Desarrollado por **Remigio Stocker**  
 Para Evaluación Nacional de Especialidad – PRO201, Taller de Programación 2024
