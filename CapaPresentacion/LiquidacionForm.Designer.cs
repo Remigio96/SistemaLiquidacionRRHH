@@ -42,7 +42,9 @@
             this.txtSueldoLiquido = new System.Windows.Forms.TextBox();
             this.cmbAFP = new System.Windows.Forms.ComboBox();
             this.cmbSalud = new System.Windows.Forms.ComboBox();
-            this.lblTitulo = new System.Windows.Forms.Label();
+            this.lblTituloCalcular = new System.Windows.Forms.Label();
+            this.btnVolverLiquidaciones = new System.Windows.Forms.Button();
+            this.cmbEmpleados = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // lblHorasTrabajadas
@@ -88,17 +90,18 @@
             // btnCalcular
             // 
             this.btnCalcular.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCalcular.Location = new System.Drawing.Point(28, 218);
+            this.btnCalcular.Location = new System.Drawing.Point(28, 196);
             this.btnCalcular.Name = "btnCalcular";
             this.btnCalcular.Size = new System.Drawing.Size(95, 37);
             this.btnCalcular.TabIndex = 4;
             this.btnCalcular.Text = "Calcular";
             this.btnCalcular.UseVisualStyleBackColor = true;
+            this.btnCalcular.Click += new System.EventHandler(this.btnCalcular_Click);
             // 
             // btnGuardar
             // 
             this.btnGuardar.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGuardar.Location = new System.Drawing.Point(28, 271);
+            this.btnGuardar.Location = new System.Drawing.Point(28, 246);
             this.btnGuardar.Name = "btnGuardar";
             this.btnGuardar.Size = new System.Drawing.Size(95, 37);
             this.btnGuardar.TabIndex = 5;
@@ -108,7 +111,7 @@
             // btnLimpiar
             // 
             this.btnLimpiar.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLimpiar.Location = new System.Drawing.Point(28, 323);
+            this.btnLimpiar.Location = new System.Drawing.Point(28, 296);
             this.btnLimpiar.Name = "btnLimpiar";
             this.btnLimpiar.Size = new System.Drawing.Size(95, 37);
             this.btnLimpiar.TabIndex = 6;
@@ -118,7 +121,7 @@
             // btnListar
             // 
             this.btnListar.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnListar.Location = new System.Drawing.Point(28, 375);
+            this.btnListar.Location = new System.Drawing.Point(28, 346);
             this.btnListar.Name = "btnListar";
             this.btnListar.Size = new System.Drawing.Size(95, 37);
             this.btnListar.TabIndex = 7;
@@ -160,6 +163,11 @@
             // cmbAFP
             // 
             this.cmbAFP.FormattingEnabled = true;
+            this.cmbAFP.Items.AddRange(new object[] {
+            "CUPRUM",
+            "MODELO",
+            "CAPITAL",
+            "PROVIDA"});
             this.cmbAFP.Location = new System.Drawing.Point(482, 93);
             this.cmbAFP.Name = "cmbAFP";
             this.cmbAFP.Size = new System.Drawing.Size(121, 21);
@@ -168,28 +176,54 @@
             // cmbSalud
             // 
             this.cmbSalud.FormattingEnabled = true;
+            this.cmbSalud.Items.AddRange(new object[] {
+            "FONASA",
+            "CONSALUD",
+            "MASVIDA",
+            "BANMEDICA"});
             this.cmbSalud.Location = new System.Drawing.Point(482, 138);
             this.cmbSalud.Name = "cmbSalud";
             this.cmbSalud.Size = new System.Drawing.Size(121, 21);
             this.cmbSalud.TabIndex = 13;
             // 
-            // lblTitulo
+            // lblTituloCalcular
             // 
-            this.lblTitulo.AutoSize = true;
-            this.lblTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitulo.Location = new System.Drawing.Point(23, 24);
-            this.lblTitulo.Name = "lblTitulo";
-            this.lblTitulo.Size = new System.Drawing.Size(263, 29);
-            this.lblTitulo.TabIndex = 14;
-            this.lblTitulo.Text = "CALCULAR SUELDO:";
-            this.lblTitulo.Click += new System.EventHandler(this.lblTitulo_Click);
+            this.lblTituloCalcular.AutoSize = true;
+            this.lblTituloCalcular.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTituloCalcular.Location = new System.Drawing.Point(48, 22);
+            this.lblTituloCalcular.Name = "lblTituloCalcular";
+            this.lblTituloCalcular.Size = new System.Drawing.Size(263, 29);
+            this.lblTituloCalcular.TabIndex = 14;
+            this.lblTituloCalcular.Text = "CALCULAR SUELDO:";
+            this.lblTituloCalcular.Click += new System.EventHandler(this.lblTitulo_Click);
+            // 
+            // btnVolverLiquidaciones
+            // 
+            this.btnVolverLiquidaciones.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnVolverLiquidaciones.Location = new System.Drawing.Point(28, 396);
+            this.btnVolverLiquidaciones.Name = "btnVolverLiquidaciones";
+            this.btnVolverLiquidaciones.Size = new System.Drawing.Size(95, 37);
+            this.btnVolverLiquidaciones.TabIndex = 15;
+            this.btnVolverLiquidaciones.Text = "Volver";
+            this.btnVolverLiquidaciones.UseVisualStyleBackColor = true;
+            this.btnVolverLiquidaciones.Click += new System.EventHandler(this.btnVolverLiquidaciones_Click);
+            // 
+            // cmbEmpleados
+            // 
+            this.cmbEmpleados.FormattingEnabled = true;
+            this.cmbEmpleados.Location = new System.Drawing.Point(340, 26);
+            this.cmbEmpleados.Name = "cmbEmpleados";
+            this.cmbEmpleados.Size = new System.Drawing.Size(203, 21);
+            this.cmbEmpleados.TabIndex = 16;
             // 
             // LiquidacionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(639, 450);
-            this.Controls.Add(this.lblTitulo);
+            this.Controls.Add(this.cmbEmpleados);
+            this.Controls.Add(this.btnVolverLiquidaciones);
+            this.Controls.Add(this.lblTituloCalcular);
             this.Controls.Add(this.cmbSalud);
             this.Controls.Add(this.cmbAFP);
             this.Controls.Add(this.txtSueldoLiquido);
@@ -205,6 +239,7 @@
             this.Controls.Add(this.lblHorasExtras);
             this.Controls.Add(this.lblHorasTrabajadas);
             this.Name = "LiquidacionForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Cálculo de Liquidación";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -227,6 +262,8 @@
         private System.Windows.Forms.TextBox txtSueldoLiquido;
         private System.Windows.Forms.ComboBox cmbAFP;
         private System.Windows.Forms.ComboBox cmbSalud;
-        private System.Windows.Forms.Label lblTitulo;
+        private System.Windows.Forms.Label lblTituloCalcular;
+        private System.Windows.Forms.Button btnVolverLiquidaciones;
+        private System.Windows.Forms.ComboBox cmbEmpleados;
     }
 }

@@ -32,7 +32,7 @@
             this.cmbFiltroRut = new System.Windows.Forms.ComboBox();
             this.btnModificar = new System.Windows.Forms.Button();
             this.btnEliminar = new System.Windows.Forms.Button();
-            this.lblTitulo = new System.Windows.Forms.Label();
+            this.lblTituloListado = new System.Windows.Forms.Label();
             this.btnVolver = new System.Windows.Forms.Button();
             this.dgvEmpleados = new System.Windows.Forms.DataGridView();
             this.colRut = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -46,15 +46,17 @@
             // 
             this.lblFiltrarPorRut.AutoSize = true;
             this.lblFiltrarPorRut.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFiltrarPorRut.Location = new System.Drawing.Point(43, 119);
+            this.lblFiltrarPorRut.Location = new System.Drawing.Point(7, 116);
             this.lblFiltrarPorRut.Name = "lblFiltrarPorRut";
-            this.lblFiltrarPorRut.Size = new System.Drawing.Size(92, 24);
+            this.lblFiltrarPorRut.Size = new System.Drawing.Size(141, 24);
             this.lblFiltrarPorRut.TabIndex = 0;
-            this.lblFiltrarPorRut.Text = "FILTRAR:";
+            this.lblFiltrarPorRut.Text = "TRABAJADOR:";
             // 
             // cmbFiltroRut
             // 
             this.cmbFiltroRut.FormattingEnabled = true;
+            this.cmbFiltroRut.Items.AddRange(new object[] {
+            "TODOS"});
             this.cmbFiltroRut.Location = new System.Drawing.Point(154, 119);
             this.cmbFiltroRut.Name = "cmbFiltroRut";
             this.cmbFiltroRut.Size = new System.Drawing.Size(246, 21);
@@ -69,6 +71,7 @@
             this.btnModificar.TabIndex = 2;
             this.btnModificar.Text = "Modificar";
             this.btnModificar.UseVisualStyleBackColor = true;
+            this.btnModificar.Click += new System.EventHandler(this.btnModificar_Click);
             // 
             // btnEliminar
             // 
@@ -79,16 +82,17 @@
             this.btnEliminar.TabIndex = 3;
             this.btnEliminar.Text = "Eliminar";
             this.btnEliminar.UseVisualStyleBackColor = true;
+            this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
             // 
-            // lblTitulo
+            // lblTituloListado
             // 
-            this.lblTitulo.AutoSize = true;
-            this.lblTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitulo.Location = new System.Drawing.Point(201, 36);
-            this.lblTitulo.Name = "lblTitulo";
-            this.lblTitulo.Size = new System.Drawing.Size(138, 31);
-            this.lblTitulo.TabIndex = 4;
-            this.lblTitulo.Text = "LISTADO";
+            this.lblTituloListado.AutoSize = true;
+            this.lblTituloListado.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTituloListado.Location = new System.Drawing.Point(201, 36);
+            this.lblTituloListado.Name = "lblTituloListado";
+            this.lblTituloListado.Size = new System.Drawing.Size(138, 31);
+            this.lblTituloListado.TabIndex = 4;
+            this.lblTituloListado.Text = "LISTADO";
             // 
             // btnVolver
             // 
@@ -99,6 +103,7 @@
             this.btnVolver.TabIndex = 5;
             this.btnVolver.Text = "Volver";
             this.btnVolver.UseVisualStyleBackColor = true;
+            this.btnVolver.Click += new System.EventHandler(this.btnVolver_Click);
             // 
             // dgvEmpleados
             // 
@@ -148,13 +153,15 @@
             this.ClientSize = new System.Drawing.Size(580, 571);
             this.Controls.Add(this.dgvEmpleados);
             this.Controls.Add(this.btnVolver);
-            this.Controls.Add(this.lblTitulo);
+            this.Controls.Add(this.lblTituloListado);
             this.Controls.Add(this.btnEliminar);
             this.Controls.Add(this.btnModificar);
             this.Controls.Add(this.cmbFiltroRut);
             this.Controls.Add(this.lblFiltrarPorRut);
             this.Name = "ListadoForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Listado de Trabajadores";
+            this.Load += new System.EventHandler(this.ListadoForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvEmpleados)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -167,7 +174,7 @@
         private System.Windows.Forms.ComboBox cmbFiltroRut;
         private System.Windows.Forms.Button btnModificar;
         private System.Windows.Forms.Button btnEliminar;
-        private System.Windows.Forms.Label lblTitulo;
+        private System.Windows.Forms.Label lblTituloListado;
         private System.Windows.Forms.Button btnVolver;
         private System.Windows.Forms.DataGridView dgvEmpleados;
         private System.Windows.Forms.DataGridViewTextBoxColumn colRut;

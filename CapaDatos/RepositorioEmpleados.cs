@@ -53,5 +53,15 @@ namespace CapaDatos
             }
             return false;
         }
+
+        // Precarga de empleados para pruebas
+        public static void PrecargarEmpleados()
+        {
+            if (empleados.Count == 0) // Evita duplicación si ya fueron precargados
+            {
+                empleados.Add(new Empleado("19.595.224-4", "Ana Ríos", "Los Olmos 123", "+56912345678", 5000, 7000));
+                empleados.Add(new Empleado("18.461.837-k", "Luis Soto", "Av. Providencia 456", "+56987654321", 5000, 7000));
+            }
+        }
     }
 }
