@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using CapaDatos;
 
 namespace CapaNegocio
@@ -11,7 +13,20 @@ namespace CapaNegocio
             RepositorioEmpleados.PrecargarEmpleados();
         }
 
-        // Este método se llama desde la capa de presentación
+        // Método expuesto a CapaPresentacion → solo devuelve EmpleadoDTO (no Empleado real)
+        public static List<EmpleadoDTO> ObtenerTodos()
+        {
+            var empleados = RepositorioEmpleados.ObtenerTodos();
+
+            return empleados.Select(e => new EmpleadoDTO
+            {
+                Rut = e.Rut,
+                Nombre = e.Nombre,
+                Direccion = e.Direccion
+            }).ToList();
+        }
+
+        // Método que recibe datos simples desde el formulario
         public static void RegistrarEmpleado(string rut, string nombre, string direccion, string telefono, int valorHora, int valorHoraExtra)
         {
             var empleado = new Empleado
@@ -24,11 +39,10 @@ namespace CapaNegocio
                 ValorHoraExtra = valorHoraExtra
             };
 
-            // Llamada al método validado interno
             RegistrarEmpleado(empleado);
         }
 
-        // Esta sobrecarga es la lógica central de validación y guardado
+        // Validación y guardado de objeto Empleado
         public static void RegistrarEmpleado(Empleado empleado)
         {
             if (empleado == null)
@@ -47,7 +61,6 @@ namespace CapaNegocio
                 throw new ArgumentException("Los valores numéricos deben ser mayores a cero.");
             }
 
-            // Finalmente, guardamos en la capa de datos
             RepositorioEmpleados.AgregarEmpleado(empleado);
         }
     }
