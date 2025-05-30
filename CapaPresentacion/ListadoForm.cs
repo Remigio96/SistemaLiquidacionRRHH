@@ -1,14 +1,14 @@
-﻿using System;
+﻿using CapaNegocio;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using CapaNegocio;
 
 namespace CapaPresentacion
 {
     public partial class ListadoForm : Form
     {
-        private Form menuForm;      // Referencia al menú principal
-        private string rolUsuario;  // Rol del usuario actual
+        private Form menuForm;
+        private string rolUsuario;
 
         public ListadoForm(Form menu, string rol)
         {
@@ -19,34 +19,54 @@ namespace CapaPresentacion
 
         private void ListadoForm_Load(object sender, EventArgs e)
         {
-            CargarEmpleados(); // 🔹 Carga inicial de empleados al abrir el formulario
+            CargarEmpleados();
         }
 
         private void CargarEmpleados()
         {
-            dgvEmpleados.Rows.Clear(); // Limpia el DataGridView
+            dgvEmpleados.Rows.Clear();
 
             List<EmpleadoDTO> lista = EmpleadoService.ObtenerTodos();
 
             foreach (var emp in lista)
             {
-                dgvEmpleados.Rows.Add(emp.Rut, emp.Nombre, emp.Direccion, "—"); // Sueldo líquido como placeholder
+                dgvEmpleados.Rows.Add(emp.Rut, emp.Nombre, emp.Direccion, "—");
             }
         }
 
         private void btnVolver_Click(object sender, EventArgs e)
         {
-            this.Close();         // Cierra el formulario actual
-            menuForm.Show();      // Vuelve al menú principal
+            this.Close();
+            menuForm.Show();
         }
 
         private void btnModificar_Click(object sender, EventArgs e)
         {
+            if (dgvEmpleados.CurrentRow == null) return;
+
+            string rutSeleccionado = dgvEmpleados.CurrentRow.Cells[0].Value?.ToString();
+
+            if (string.IsNullOrWhiteSpace(rutSeleccionado))
+            {
+                MessageBox.Show("Debes seleccionar un empleado.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if (rolUsuario == "admin")
             {
-                RegistroEmpleadoForm form = new RegistroEmpleadoForm(menuForm);
-                form.Show();
-                this.Hide();
+                // Usar método nuevo que retorna un DTO completo
+                EmpleadoDTO empleado = EmpleadoService.ObtenerDTOporRut(rutSeleccionado);
+
+                if (empleado != null)
+                {
+                    RegistroEmpleadoForm form = new RegistroEmpleadoForm(menuForm, empleado); // Form debe aceptar DTO
+                    form.Show();
+                    this.Hide();
+                }
+                else
+                {
+                    MessageBox.Show("Empleado no encontrado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
@@ -58,9 +78,35 @@ namespace CapaPresentacion
 
         private void btnEliminar_Click(object sender, EventArgs e)
         {
+            if (dgvEmpleados.CurrentRow == null) return;
+
+            string rutSeleccionado = dgvEmpleados.CurrentRow.Cells[0].Value?.ToString();
+
+            if (string.IsNullOrWhiteSpace(rutSeleccionado))
+            {
+                MessageBox.Show("Debes seleccionar un empleado.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if (rolUsuario == "admin")
             {
-                MessageBox.Show("Empleado eliminado del sistema (simulado).", "Administrador", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                DialogResult confirm = MessageBox.Show("¿Estás seguro que deseas eliminar este empleado?",
+                    "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (confirm == DialogResult.Yes)
+                {
+                    bool eliminado = EmpleadoService.EliminarEmpleado(rutSeleccionado);
+
+                    if (eliminado)
+                    {
+                        MessageBox.Show("Empleado eliminado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        CargarEmpleados();
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se pudo eliminar el empleado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
             else
             {

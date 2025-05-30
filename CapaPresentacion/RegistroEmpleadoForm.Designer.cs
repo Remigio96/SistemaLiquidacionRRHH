@@ -52,7 +52,6 @@
             this.txtRut.Name = "txtRut";
             this.txtRut.Size = new System.Drawing.Size(236, 20);
             this.txtRut.TabIndex = 0;
-            this.txtRut.TextChanged += new System.EventHandler(this.txtRut_TextChanged);
             // 
             // lblTituloRegistro
             // 
@@ -83,7 +82,6 @@
             this.lblNombre.Size = new System.Drawing.Size(84, 24);
             this.lblNombre.TabIndex = 3;
             this.lblNombre.Text = "Nombre:";
-            this.lblNombre.Click += new System.EventHandler(this.lblNombre_Click);
             // 
             // lblDireccion
             // 
@@ -104,7 +102,6 @@
             this.lblTelefono.Size = new System.Drawing.Size(90, 24);
             this.lblTelefono.TabIndex = 5;
             this.lblTelefono.Text = "Teléfono:";
-            this.lblTelefono.Click += new System.EventHandler(this.lblTelefono_Click);
             // 
             // lblValorHora
             // 
@@ -132,7 +129,6 @@
             this.txtNombre.Name = "txtNombre";
             this.txtNombre.Size = new System.Drawing.Size(236, 20);
             this.txtNombre.TabIndex = 8;
-            this.txtNombre.TextChanged += new System.EventHandler(this.txtNombre_TextChanged);
             // 
             // txtDireccion
             // 
@@ -140,7 +136,6 @@
             this.txtDireccion.Name = "txtDireccion";
             this.txtDireccion.Size = new System.Drawing.Size(236, 20);
             this.txtDireccion.TabIndex = 9;
-            this.txtDireccion.TextChanged += new System.EventHandler(this.txtDireccion_TextChanged);
             // 
             // txtTelefono
             // 
@@ -148,7 +143,6 @@
             this.txtTelefono.Name = "txtTelefono";
             this.txtTelefono.Size = new System.Drawing.Size(236, 20);
             this.txtTelefono.TabIndex = 10;
-            this.txtTelefono.TextChanged += new System.EventHandler(this.txtTelefono_TextChanged);
             // 
             // txtValorHora
             // 
@@ -156,7 +150,6 @@
             this.txtValorHora.Name = "txtValorHora";
             this.txtValorHora.Size = new System.Drawing.Size(236, 20);
             this.txtValorHora.TabIndex = 11;
-            this.txtValorHora.TextChanged += new System.EventHandler(this.txtValorHora_TextChanged);
             // 
             // txtValorExtra
             // 
@@ -164,7 +157,6 @@
             this.txtValorExtra.Name = "txtValorExtra";
             this.txtValorExtra.Size = new System.Drawing.Size(236, 20);
             this.txtValorExtra.TabIndex = 12;
-            this.txtValorExtra.TextChanged += new System.EventHandler(this.txtValorExtra_TextChanged);
             // 
             // btnGuardar
             // 

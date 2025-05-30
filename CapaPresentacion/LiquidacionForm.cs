@@ -30,5 +30,10 @@ namespace CapaPresentacion
             this.Close();         // Cierra el formulario actual
             menuForm.Show();      // Muestra el menú principal
         }
+
+        private void LiquidacionForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using CapaNegocio;
 
@@ -13,7 +6,9 @@ namespace CapaPresentacion
 {
     public partial class RegistroEmpleadoForm : Form
     {
-        private Form menuForm; // Referencia al menú principal
+        private Form menuForm;
+        private bool esEdicion = false;
+        private string rutOriginal;
 
         public RegistroEmpleadoForm(Form menu)
         {
@@ -21,11 +16,28 @@ namespace CapaPresentacion
             menuForm = menu;
         }
 
+        // Constructor para modo edición que recibe EmpleadoDTO
+        public RegistroEmpleadoForm(Form menu, EmpleadoDTO empleado)
+        {
+            InitializeComponent();
+            menuForm = menu;
+            esEdicion = true;
+            rutOriginal = empleado.Rut;
+
+            txtRut.Text = empleado.Rut;
+            txtNombre.Text = empleado.Nombre;
+            txtDireccion.Text = empleado.Direccion;
+            txtTelefono.Text = empleado.Telefono;
+            txtValorHora.Text = empleado.ValorHora.ToString();
+            txtValorExtra.Text = empleado.ValorHoraExtra.ToString();
+
+            txtRut.Enabled = false;
+        }
+
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             try
             {
-                // Validaciones básicas
                 if (string.IsNullOrWhiteSpace(txtRut.Text) ||
                     string.IsNullOrWhiteSpace(txtNombre.Text) ||
                     string.IsNullOrWhiteSpace(txtDireccion.Text) ||
@@ -37,7 +49,6 @@ namespace CapaPresentacion
                     return;
                 }
 
-                // Validaciones numéricas
                 if (!int.TryParse(txtValorHora.Text, out int valorHora) ||
                     !int.TryParse(txtValorExtra.Text, out int valorHoraExtra))
                 {
@@ -45,22 +56,47 @@ namespace CapaPresentacion
                     return;
                 }
 
-                // Llamar a la lógica de negocio
-                EmpleadoService.RegistrarEmpleado(
-                    txtRut.Text,
-                    txtNombre.Text,
-                    txtDireccion.Text,
-                    txtTelefono.Text,
-                    valorHora,
-                    valorHoraExtra
-                );
+                if (esEdicion)
+                {
+                    // ✅ Usar método intermedio de la capa de negocio
+                    bool actualizado = EmpleadoService.ModificarEmpleadoDesdeCampos(
+                        rutOriginal,
+                        txtNombre.Text,
+                        txtDireccion.Text,
+                        txtTelefono.Text,
+                        valorHora,
+                        valorHoraExtra
+                    );
 
-                MessageBox.Show("Empleado registrado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                LimpiarFormulario();
+                    if (actualizado)
+                    {
+                        MessageBox.Show("Empleado actualizado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.Close();
+                        menuForm.Show();
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se pudo actualizar el empleado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    EmpleadoService.RegistrarEmpleado(
+                        txtRut.Text,
+                        txtNombre.Text,
+                        txtDireccion.Text,
+                        txtTelefono.Text,
+                        valorHora,
+                        valorHoraExtra
+                    );
+
+                    MessageBox.Show("Empleado registrado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LimpiarFormulario();
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al registrar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al procesar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -71,8 +107,8 @@ namespace CapaPresentacion
 
         private void btn_VolverMenu_Click(object sender, EventArgs e)
         {
-            this.Close();       // Cierra este formulario
-            menuForm.Show();    // Vuelve al menú principal
+            this.Close();
+            menuForm.Show();
         }
 
         private void LimpiarFormulario()
@@ -86,19 +122,6 @@ namespace CapaPresentacion
             txtRut.Focus();
         }
 
-        // Métodos generados por el diseñador (sin implementación)
-        private void lblTelefono_Click(object sender, EventArgs e) { }
-        private void lblNombre_Click(object sender, EventArgs e) { }
-        private void txtRut_TextChanged(object sender, EventArgs e) { }
-        private void txtNombre_TextChanged(object sender, EventArgs e) { }
-        private void txtDireccion_TextChanged(object sender, EventArgs e) { }
-        private void txtTelefono_TextChanged(object sender, EventArgs e) { }
-        private void txtValorHora_TextChanged(object sender, EventArgs e) { }
-        private void txtValorExtra_TextChanged(object sender, EventArgs e) { }
-
-        private void RegistroEmpleadoForm_Load(object sender, EventArgs e)
-        {
-
-        }
+        private void RegistroEmpleadoForm_Load(object sender, EventArgs e) { }
     }
 }

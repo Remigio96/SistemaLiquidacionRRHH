@@ -7,13 +7,13 @@ namespace CapaNegocio
 {
     public static class EmpleadoService
     {
-        // Método llamado desde LoginForm para precargar datos simulados
+        // Precarga de empleados simulados (para pruebas)
         public static void PrecargarEmpleados()
         {
             RepositorioEmpleados.PrecargarEmpleados();
         }
 
-        // Método expuesto a CapaPresentacion → solo devuelve EmpleadoDTO (no Empleado real)
+        // Devuelve una lista de DTOs para usar en la presentación (sin exponer CapaDatos)
         public static List<EmpleadoDTO> ObtenerTodos()
         {
             var empleados = RepositorioEmpleados.ObtenerTodos();
@@ -22,11 +22,31 @@ namespace CapaNegocio
             {
                 Rut = e.Rut,
                 Nombre = e.Nombre,
-                Direccion = e.Direccion
+                Direccion = e.Direccion,
+                Telefono = e.Telefono,
+                ValorHora = e.ValorHora,
+                ValorHoraExtra = e.ValorHoraExtra
             }).ToList();
         }
 
-        // Método que recibe datos simples desde el formulario
+        // 🔹 Obtener un DTO completo por RUT
+        public static EmpleadoDTO ObtenerDTOporRut(string rut)
+        {
+            var emp = RepositorioEmpleados.BuscarPorRut(rut);
+            if (emp == null) return null;
+
+            return new EmpleadoDTO
+            {
+                Rut = emp.Rut,
+                Nombre = emp.Nombre,
+                Direccion = emp.Direccion,
+                Telefono = emp.Telefono,
+                ValorHora = emp.ValorHora,
+                ValorHoraExtra = emp.ValorHoraExtra
+            };
+        }
+
+        // Registro a partir de campos simples
         public static void RegistrarEmpleado(string rut, string nombre, string direccion, string telefono, int valorHora, int valorHoraExtra)
         {
             var empleado = new Empleado
@@ -42,7 +62,7 @@ namespace CapaNegocio
             RegistrarEmpleado(empleado);
         }
 
-        // Validación y guardado de objeto Empleado
+        // Registro con objeto Empleado (validación incluida)
         public static void RegistrarEmpleado(Empleado empleado)
         {
             if (empleado == null)
@@ -62,6 +82,40 @@ namespace CapaNegocio
             }
 
             RepositorioEmpleados.AgregarEmpleado(empleado);
+        }
+
+        // Buscar empleado por RUT (uso interno)
+        public static Empleado BuscarPorRut(string rut)
+        {
+            return RepositorioEmpleados.BuscarPorRut(rut);
+        }
+
+        // Modificar empleado usando objeto Empleado (uso interno/test)
+        public static bool ModificarEmpleado(Empleado empleado)
+        {
+            return RepositorioEmpleados.ModificarEmpleado(empleado);
+        }
+
+        // 🔹 Método para modificar desde capa presentación (campos simples)
+        public static bool ModificarEmpleadoDesdeCampos(string rut, string nombre, string direccion, string telefono, int valorHora, int valorHoraExtra)
+        {
+            var empleado = new Empleado
+            {
+                Rut = rut,
+                Nombre = nombre,
+                Direccion = direccion,
+                Telefono = telefono,
+                ValorHora = valorHora,
+                ValorHoraExtra = valorHoraExtra
+            };
+
+            return RepositorioEmpleados.ModificarEmpleado(empleado);
+        }
+
+        // Eliminar empleado por RUT
+        public static bool EliminarEmpleado(string rut)
+        {
+            return RepositorioEmpleados.EliminarEmpleado(rut);
         }
     }
 }

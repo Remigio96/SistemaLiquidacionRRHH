@@ -241,6 +241,7 @@
             this.Name = "LiquidacionForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Cálculo de Liquidación";
+            this.Load += new System.EventHandler(this.LiquidacionForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
