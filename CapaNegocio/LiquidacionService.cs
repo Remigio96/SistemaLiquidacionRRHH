@@ -4,7 +4,7 @@ namespace CapaNegocio
 {
     public class LiquidacionService
     {
-        // Método principal para generar liquidación y devolverla
+        // Método original
         public Liquidacion GenerarLiquidacion(
             Empleado empleado,
             int horasTrabajadas,
@@ -15,7 +15,47 @@ namespace CapaNegocio
             return new Liquidacion(empleado, horasTrabajadas, horasExtras, afp, salud);
         }
 
-        // Métodos auxiliares para acceder a cada cálculo (opcional pero útil para separar responsabilidades)
+        // Método para convertir DTO a entidad interna
+        public Liquidacion GenerarLiquidacionDTO(
+            EmpleadoDTO dto,
+            int horasTrabajadas,
+            int horasExtras,
+            string afp,
+            string salud)
+        {
+            var empleado = new Empleado
+            {
+                Rut = dto.Rut,
+                Nombre = dto.Nombre,
+                Direccion = dto.Direccion,
+                Telefono = dto.Telefono,
+                ValorHora = dto.ValorHora,
+                ValorHoraExtra = dto.ValorHoraExtra
+            };
+
+            return new Liquidacion(empleado, horasTrabajadas, horasExtras, afp, salud);
+        }
+
+        // NUEVO método para retornar un DTO limpio
+        public LiquidacionDTO CalcularLiquidacionDesdeDTO(
+            EmpleadoDTO dto,
+            int horasTrabajadas,
+            int horasExtras,
+            string afp,
+            string salud)
+        {
+            var liquidacion = GenerarLiquidacionDTO(dto, horasTrabajadas, horasExtras, afp, salud);
+
+            return new LiquidacionDTO
+            {
+                SueldoBruto = liquidacion.CalcularSueldoBruto(),
+                DescuentoAFP = liquidacion.CalcularDescuentoAFP(),
+                DescuentoSalud = liquidacion.CalcularDescuentoSalud(),
+                SueldoLiquido = liquidacion.CalcularSueldoLiquido()
+            };
+        }
+
+        // Métodos auxiliares
         public int ObtenerSueldoBruto(Liquidacion liquidacion)
         {
             return liquidacion.CalcularSueldoBruto();

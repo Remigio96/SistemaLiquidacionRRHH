@@ -1,6 +1,7 @@
 ﻿using CapaNegocio;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace CapaPresentacion
@@ -113,5 +114,63 @@ namespace CapaPresentacion
                 MessageBox.Show("Liquidación eliminada para el empleado (simulado).", "Usuario", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
+        private void dgvEmpleados_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void cmbFiltro_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string opcion = cmbFiltro.SelectedItem.ToString();
+            var empleados = EmpleadoService.ObtenerTodos();
+            List<EmpleadoDTO> empleadosFiltrados;
+
+            // Función para obtener la primera letra del primer nombre
+            Func<string, char> letraNombre = nombre =>
+            {
+                var partes = nombre.Split(' ');
+                return char.ToUpper(partes[0][0]); // Letra inicial del primer nombre
+            };
+
+            switch (opcion)
+            {
+                case "TODOS":
+                    empleadosFiltrados = empleados;
+                    break;
+
+                case "\"A - F\"":
+                    empleadosFiltrados = empleados.Where(emp =>
+                        letraNombre(emp.Nombre) >= 'A' && letraNombre(emp.Nombre) <= 'F').ToList();
+                    break;
+
+                case "\"G - L\"":
+                    empleadosFiltrados = empleados.Where(emp =>
+                        letraNombre(emp.Nombre) >= 'G' && letraNombre(emp.Nombre) <= 'L').ToList();
+                    break;
+
+                case "\"M - R\"":
+                    empleadosFiltrados = empleados.Where(emp =>
+                        letraNombre(emp.Nombre) >= 'M' && letraNombre(emp.Nombre) <= 'R').ToList();
+                    break;
+
+                case "\"S - Z\"":
+                    empleadosFiltrados = empleados.Where(emp =>
+                        letraNombre(emp.Nombre) >= 'S' && letraNombre(emp.Nombre) <= 'Z').ToList();
+                    break;
+
+                default:
+                    empleadosFiltrados = empleados;
+                    break;
+            }
+
+            dgvEmpleados.DataSource = null;
+            dgvEmpleados.DataSource = empleadosFiltrados;
+            dgvEmpleados.AutoResizeColumns();
+            dgvEmpleados.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+
+        }
+
+
     }
 }

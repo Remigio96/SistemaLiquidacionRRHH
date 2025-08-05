@@ -43,8 +43,10 @@
   <ItemGroup>
     <Compile Include="EmpleadoDTO.cs" />
     <Compile Include="EmpleadoService.cs" />
+    <Compile Include="LiquidacionDTO.cs" />
     <Compile Include="LiquidacionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepositorioLiquidaciones.cs" />
     <Compile Include="ValidacionService.cs" />
   </ItemGroup>
   <ItemGroup>
