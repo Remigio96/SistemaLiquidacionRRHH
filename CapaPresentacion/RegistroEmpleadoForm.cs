@@ -14,6 +14,7 @@ namespace CapaPresentacion
         {
             InitializeComponent();
             menuForm = menu;
+            ConfigurarValidacionesTiempo();
         }
 
         // Constructor para modo edición que recibe EmpleadoDTO
@@ -32,29 +33,81 @@ namespace CapaPresentacion
             txtValorExtra.Text = empleado.ValorHoraExtra.ToString();
 
             txtRut.Enabled = false;
+            ConfigurarValidacionesTiempo();
+        }
+
+        // Validaciones en tiempo real: restringe la entrada de caracteres según el campo
+        private void ConfigurarValidacionesTiempo()
+        {
+            // Nombre: solo letras y espacios
+            txtNombre.KeyPress += (s, ev) =>
+            {
+                if (!char.IsLetter(ev.KeyChar) && !char.IsWhiteSpace(ev.KeyChar) && !char.IsControl(ev.KeyChar))
+                {
+                    ev.Handled = true;
+                }
+            };
+
+            // Teléfono: solo números y el símbolo +
+            txtTelefono.KeyPress += (s, ev) =>
+            {
+                if (!char.IsDigit(ev.KeyChar) && ev.KeyChar != '+' && !char.IsControl(ev.KeyChar))
+                {
+                    ev.Handled = true;
+                }
+            };
+
+            // Valor Hora: solo números
+            txtValorHora.KeyPress += (s, ev) =>
+            {
+                if (!char.IsDigit(ev.KeyChar) && !char.IsControl(ev.KeyChar))
+                {
+                    ev.Handled = true;
+                }
+            };
+
+            // Valor Hora Extra: solo números
+            txtValorExtra.KeyPress += (s, ev) =>
+            {
+                if (!char.IsDigit(ev.KeyChar) && !char.IsControl(ev.KeyChar))
+                {
+                    ev.Handled = true;
+                }
+            };
         }
 
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(txtRut.Text) ||
-                    string.IsNullOrWhiteSpace(txtNombre.Text) ||
-                    string.IsNullOrWhiteSpace(txtDireccion.Text) ||
-                    string.IsNullOrWhiteSpace(txtTelefono.Text) ||
-                    string.IsNullOrWhiteSpace(txtValorHora.Text) ||
-                    string.IsNullOrWhiteSpace(txtValorExtra.Text))
+                // Validaciones usando ValidacionService
+                if (ValidacionService.EstaVacio(txtRut.Text) ||
+                    ValidacionService.EstaVacio(txtNombre.Text) ||
+                    ValidacionService.EstaVacio(txtDireccion.Text) ||
+                    ValidacionService.EstaVacio(txtTelefono.Text) ||
+                    ValidacionService.EstaVacio(txtValorHora.Text) ||
+                    ValidacionService.EstaVacio(txtValorExtra.Text))
                 {
                     MessageBox.Show("Todos los campos son obligatorios.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                if (!int.TryParse(txtValorHora.Text, out int valorHora) ||
-                    !int.TryParse(txtValorExtra.Text, out int valorHoraExtra))
+                if (!ValidacionService.ContieneSoloLetras(txtNombre.Text))
+                {
+                    MessageBox.Show("El nombre debe contener solo letras.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtNombre.Focus();
+                    return;
+                }
+
+                if (!ValidacionService.EsEnteroValido(txtValorHora.Text) ||
+                    !ValidacionService.EsEnteroValido(txtValorExtra.Text))
                 {
                     MessageBox.Show("Los campos 'Valor Hora' y 'Valor Hora Extra' deben ser numéricos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
+                int valorHora = int.Parse(txtValorHora.Text);
+                int valorHoraExtra = int.Parse(txtValorExtra.Text);
 
                 if (esEdicion)
                 {

@@ -25,7 +25,7 @@ namespace CapaPresentacion
                 string usuario = txtUsuario.Text.Trim();
                 string password = txtPassword.Text.Trim();
 
-                if (string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(password))
+                if (ValidacionService.EstaVacio(usuario) || ValidacionService.EstaVacio(password))
                 {
                     MessageBox.Show("Debe ingresar usuario y contraseña.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -36,8 +36,9 @@ namespace CapaPresentacion
                 {
                     string rol = (usuario == "admin") ? "admin" : "usuario";
 
-                    // 🔹 Precargar empleados si aún no están cargados
+                    // Precargar datos si aún no están cargados
                     EmpleadoService.PrecargarEmpleados();
+                    RepositorioLiquidaciones.PrecargarLiquidaciones();
 
                     MenuForm menu = new MenuForm(rol); // ← le pasamos el rol
                     menu.Show();

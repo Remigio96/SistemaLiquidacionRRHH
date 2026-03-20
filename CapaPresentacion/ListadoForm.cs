@@ -20,20 +20,35 @@ namespace CapaPresentacion
 
         private void ListadoForm_Load(object sender, EventArgs e)
         {
+            dgvEmpleados.AutoGenerateColumns = false;
+
+            if (rolUsuario != "admin")
+            {
+                btnModificar.Visible = false;
+                btnEliminar.Visible = false;
+            }
+
             CargarEmpleados();
         }
 
-        private void CargarEmpleados()
+        private void CargarEmpleados(List<EmpleadoDTO> listaFiltrada = null)
         {
             dgvEmpleados.Rows.Clear();
-
-            List<EmpleadoDTO> lista = EmpleadoService.ObtenerTodos();
+            List<EmpleadoDTO> lista = listaFiltrada ?? EmpleadoService.ObtenerTodos();
 
             foreach (var emp in lista)
             {
-                dgvEmpleados.Rows.Add(emp.Rut, emp.Nombre, emp.Direccion, "—");
+                var ultLiquidacion = RepositorioLiquidaciones.ObtenerTodas()
+                    .Where(l => l.RutEmpleado == emp.Rut)
+                    .OrderByDescending(l => l.SueldoLiquido)
+                    .FirstOrDefault();
+
+                string sueldo = ultLiquidacion != null ? ultLiquidacion.SueldoLiquido.ToString("N0") : "—";
+
+                dgvEmpleados.Rows.Add(emp.Rut, emp.Nombre, emp.Direccion, sueldo);
             }
         }
+
 
         private void btnVolver_Click(object sender, EventArgs e)
         {
@@ -126,17 +141,28 @@ namespace CapaPresentacion
             var empleados = EmpleadoService.ObtenerTodos();
             List<EmpleadoDTO> empleadosFiltrados;
 
-            // Función para obtener la primera letra del primer nombre
             Func<string, char> letraNombre = nombre =>
             {
                 var partes = nombre.Split(' ');
-                return char.ToUpper(partes[0][0]); // Letra inicial del primer nombre
+                return char.ToUpper(partes[0][0]);
             };
+
+            var liquidaciones = RepositorioLiquidaciones.ObtenerTodas();
 
             switch (opcion)
             {
                 case "TODOS":
                     empleadosFiltrados = empleados;
+                    break;
+
+                case "CON SUELDO":
+                    empleadosFiltrados = empleados.Where(emp =>
+                        liquidaciones.Any(l => l.RutEmpleado == emp.Rut)).ToList();
+                    break;
+
+                case "SIN SUELDO":
+                    empleadosFiltrados = empleados.Where(emp =>
+                        !liquidaciones.Any(l => l.RutEmpleado == emp.Rut)).ToList();
                     break;
 
                 case "\"A - F\"":
@@ -164,11 +190,7 @@ namespace CapaPresentacion
                     break;
             }
 
-            dgvEmpleados.DataSource = null;
-            dgvEmpleados.DataSource = empleadosFiltrados;
-            dgvEmpleados.AutoResizeColumns();
-            dgvEmpleados.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-
+            CargarEmpleados(empleadosFiltrados);
         }
 
 

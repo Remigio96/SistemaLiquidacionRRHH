@@ -81,8 +81,15 @@ namespace CapaNegocio
                 throw new ArgumentException("Los valores numéricos deben ser mayores a cero.");
             }
 
+            // 🚫 Validación para evitar duplicados de RUT
+            if (RepositorioEmpleados.BuscarPorRut(empleado.Rut) != null)
+            {
+                throw new ArgumentException("Ya existe un empleado con este RUT.");
+            }
+
             RepositorioEmpleados.AgregarEmpleado(empleado);
         }
+
 
         // Buscar empleado por RUT (uso interno)
         public static Empleado BuscarPorRut(string rut)

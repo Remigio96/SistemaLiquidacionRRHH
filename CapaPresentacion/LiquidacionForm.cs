@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using CapaNegocio;
 
@@ -12,6 +13,31 @@ namespace CapaPresentacion
         {
             InitializeComponent();
             menuForm = menu;
+            ConfigurarValidacionesTiempo();
+        }
+
+        // Validaciones en tiempo real: solo números en campos de horas
+        private void ConfigurarValidacionesTiempo()
+        {
+            txtHorasTrabajadas.KeyPress += (s, ev) =>
+            {
+                if (!char.IsDigit(ev.KeyChar) && !char.IsControl(ev.KeyChar))
+                {
+                    ev.Handled = true;
+                }
+            };
+
+            txtHorasExtras.KeyPress += (s, ev) =>
+            {
+                if (!char.IsDigit(ev.KeyChar) && !char.IsControl(ev.KeyChar))
+                {
+                    ev.Handled = true;
+                }
+            };
+
+            // Campos de resultado son de solo lectura
+            txtSueldoBruto.ReadOnly = true;
+            txtSueldoLiquido.ReadOnly = true;
         }
 
         private void lblTitulo_Click(object sender, EventArgs e) { }
@@ -35,17 +61,20 @@ namespace CapaPresentacion
                     return;
                 }
 
-                if (!int.TryParse(txtHorasTrabajadas.Text.Trim(), out int horasTrabajadas) ||
-                    !int.TryParse(txtHorasExtras.Text.Trim(), out int horasExtras))
+                if (!ValidacionService.EsEnteroValido(txtHorasTrabajadas.Text.Trim()) ||
+                    !ValidacionService.EsEnteroValido(txtHorasExtras.Text.Trim()))
                 {
-                    MessageBox.Show("Ingrese valores válidos para horas trabajadas y extras.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Ingrese valores numéricos válidos para horas trabajadas y extras.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
+                int horasTrabajadas = int.Parse(txtHorasTrabajadas.Text.Trim());
+                int horasExtras = int.Parse(txtHorasExtras.Text.Trim());
 
                 string afp = cmbAFP.SelectedItem?.ToString();
                 string salud = cmbSalud.SelectedItem?.ToString();
 
-                if (string.IsNullOrWhiteSpace(afp) || string.IsNullOrWhiteSpace(salud))
+                if (!ValidacionService.SeleccionValida(afp) || !ValidacionService.SeleccionValida(salud))
                 {
                     MessageBox.Show("Seleccione AFP y Salud.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -83,11 +112,44 @@ namespace CapaPresentacion
             {
                 cmbEmpleados.Items.Add(emp);
             }
+
+            // Al seleccionar un empleado, cargar su liquidación si existe
+            cmbEmpleados.SelectedIndexChanged += (s, ev) =>
+            {
+                EmpleadoDTO dto = cmbEmpleados.SelectedItem as EmpleadoDTO;
+                if (dto == null) return;
+
+                var liquidacionExistente = RepositorioLiquidaciones.ObtenerTodas()
+                    .Where(l => l.RutEmpleado == dto.Rut)
+                    .OrderByDescending(l => l.SueldoLiquido)
+                    .FirstOrDefault();
+
+                if (liquidacionExistente != null)
+                {
+                    txtHorasTrabajadas.Text = liquidacionExistente.HorasTrabajadas.ToString();
+                    txtHorasExtras.Text = liquidacionExistente.HorasExtras.ToString();
+                    txtSueldoBruto.Text = liquidacionExistente.SueldoBruto.ToString("N0");
+                    txtSueldoLiquido.Text = liquidacionExistente.SueldoLiquido.ToString("N0");
+
+                    // Seleccionar AFP y Salud correspondientes
+                    cmbAFP.SelectedItem = liquidacionExistente.AFP;
+                    cmbSalud.SelectedItem = liquidacionExistente.Salud;
+                }
+                else
+                {
+                    txtHorasTrabajadas.Clear();
+                    txtHorasExtras.Clear();
+                    txtSueldoBruto.Clear();
+                    txtSueldoLiquido.Clear();
+                    cmbAFP.SelectedIndex = -1;
+                    cmbSalud.SelectedIndex = -1;
+                }
+            };
         }
 
         private void btnGuardar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtSueldoBruto.Text) || string.IsNullOrWhiteSpace(txtSueldoLiquido.Text))
+            if (cmbEmpleados.SelectedItem == null || string.IsNullOrWhiteSpace(txtSueldoBruto.Text))
             {
                 MessageBox.Show("Debe calcular la liquidación antes de guardar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -95,16 +157,25 @@ namespace CapaPresentacion
 
             try
             {
-                double.TryParse(txtSueldoBruto.Text.Replace(".", ""), out double bruto);
-                double.TryParse(txtSueldoLiquido.Text.Replace(".", ""), out double liquido);
+                EmpleadoDTO dto = cmbEmpleados.SelectedItem as EmpleadoDTO;
+                int horasTrabajadas = int.Parse(txtHorasTrabajadas.Text.Trim());
+                int horasExtras = int.Parse(txtHorasExtras.Text.Trim());
+                string afp = cmbAFP.SelectedItem.ToString();
+                string salud = cmbSalud.SelectedItem.ToString();
 
-                var liquidacion = new LiquidacionDTO
-                {
-                    SueldoBruto = (int)bruto,
-                    SueldoLiquido = liquido
-                };
+                var service = new LiquidacionService();
+                LiquidacionDTO liquidacion = service.CalcularLiquidacionDesdeDTO(dto, horasTrabajadas, horasExtras, afp, salud);
+
+                // 🔹 Guardar liquidación completa
+                liquidacion.HorasTrabajadas = horasTrabajadas;
+                liquidacion.HorasExtras = horasExtras;
+                liquidacion.AFP = afp;
+                liquidacion.Salud = salud;
+                liquidacion.RutEmpleado = dto.Rut;
+                liquidacion.NombreEmpleado = dto.Nombre;
 
                 RepositorioLiquidaciones.Guardar(liquidacion);
+                RepositorioLiquidaciones.GuardarEnArchivo("liquidaciones.json");
 
                 MessageBox.Show("Liquidación guardada correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -113,6 +184,7 @@ namespace CapaPresentacion
                 MessageBox.Show($"Error al guardar: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
 
         private void btnLimpiar_Click(object sender, EventArgs e)
@@ -137,14 +209,8 @@ namespace CapaPresentacion
                 return;
             }
 
-            string resumen = "LIQUIDACIONES GUARDADAS:\n\n";
-
-            foreach (var l in lista)
-            {
-                resumen += $"Sueldo Bruto: {l.SueldoBruto:N0} | Sueldo Líquido: {l.SueldoLiquido:N0}\n";
-            }
-
-            MessageBox.Show(resumen, "Historial de Liquidaciones", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var historial = new HistorialLiquidacionesForm();
+            historial.ShowDialog();
         }
 
     }
