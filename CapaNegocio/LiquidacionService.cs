@@ -55,6 +55,17 @@ namespace CapaNegocio
             };
         }
 
+        // Exponer arreglos de AFP y Salud a la capa de presentación
+        public static string[] ObtenerNombresAFP()
+        {
+            return Liquidacion.NombresAFP;
+        }
+
+        public static string[] ObtenerNombresSalud()
+        {
+            return Liquidacion.NombresSalud;
+        }
+
         // Métodos auxiliares
         public int ObtenerSueldoBruto(Liquidacion liquidacion)
         {

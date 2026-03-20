@@ -166,11 +166,6 @@
             // cmbAFP
             // 
             this.cmbAFP.FormattingEnabled = true;
-            this.cmbAFP.Items.AddRange(new object[] {
-            "CUPRUM",
-            "MODELO",
-            "CAPITAL",
-            "PROVIDA"});
             this.cmbAFP.Location = new System.Drawing.Point(482, 93);
             this.cmbAFP.Name = "cmbAFP";
             this.cmbAFP.Size = new System.Drawing.Size(121, 21);
@@ -179,11 +174,6 @@
             // cmbSalud
             // 
             this.cmbSalud.FormattingEnabled = true;
-            this.cmbSalud.Items.AddRange(new object[] {
-            "FONASA",
-            "CONSALUD",
-            "MASVIDA",
-            "BANMEDICA"});
             this.cmbSalud.Location = new System.Drawing.Point(482, 138);
             this.cmbSalud.Name = "cmbSalud";
             this.cmbSalud.Size = new System.Drawing.Size(121, 21);

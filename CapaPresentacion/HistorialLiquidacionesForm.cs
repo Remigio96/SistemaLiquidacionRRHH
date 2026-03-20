@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using CapaNegocio;
 
@@ -165,10 +167,19 @@ namespace CapaPresentacion
 
             var filtradas = todasLasLiquidaciones
                 .Where(l => l.NombreEmpleado != null &&
-                            l.NombreEmpleado.ToLower().Contains(filtro))
+                            RemoverTildes(l.NombreEmpleado.ToLower()).Contains(RemoverTildes(filtro)))
                 .ToList();
 
             MostrarLiquidaciones(filtradas);
+        }
+
+        private string RemoverTildes(string texto)
+        {
+            string normalizado = texto.Normalize(NormalizationForm.FormD);
+            char[] sinTildes = normalizado
+                .Where(c => UnicodeCategory.NonSpacingMark != char.GetUnicodeCategory(c))
+                .ToArray();
+            return new string(sinTildes).Normalize(NormalizationForm.FormC);
         }
     }
 }

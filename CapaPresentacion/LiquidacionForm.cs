@@ -113,6 +113,13 @@ namespace CapaPresentacion
                 cmbEmpleados.Items.Add(emp);
             }
 
+            // Cargar ComboBox de AFP y Salud desde los arreglos via CapaNegocio
+            cmbAFP.Items.Clear();
+            cmbAFP.Items.AddRange(LiquidacionService.ObtenerNombresAFP());
+
+            cmbSalud.Items.Clear();
+            cmbSalud.Items.AddRange(LiquidacionService.ObtenerNombresSalud());
+
             // Al seleccionar un empleado, cargar su liquidación si existe
             cmbEmpleados.SelectedIndexChanged += (s, ev) =>
             {

@@ -4,6 +4,14 @@ namespace CapaDatos
 {
     public class Liquidacion
     {
+        // Arreglos unidimensionales para AFP: nombres y porcentajes
+        public static readonly string[] NombresAFP = { "CUPRUM", "MODELO", "CAPITAL", "PROVIDA" };
+        public static readonly double[] PorcentajesAFP = { 0.07, 0.09, 0.12, 0.13 };
+
+        // Arreglos unidimensionales para Salud: nombres y porcentajes
+        public static readonly string[] NombresSalud = { "FONASA", "CONSALUD", "MASVIDA", "BANMEDICA" };
+        public static readonly double[] PorcentajesSalud = { 0.12, 0.13, 0.14, 0.15 };
+
         // Referencia al empleado asociado
         public Empleado Empleado { get; set; }
 
@@ -33,23 +41,13 @@ namespace CapaDatos
         {
             double porcentaje = 0.0;
 
-            switch (AFP)
+            for (int i = 0; i < NombresAFP.Length; i++)
             {
-                case "CUPRUM":
-                    porcentaje = 0.07;
+                if (NombresAFP[i] == AFP)
+                {
+                    porcentaje = PorcentajesAFP[i];
                     break;
-                case "MODELO":
-                    porcentaje = 0.09;
-                    break;
-                case "CAPITAL":
-                    porcentaje = 0.12;
-                    break;
-                case "PROVIDA":
-                    porcentaje = 0.13;
-                    break;
-                default:
-                    porcentaje = 0.0;
-                    break;
+                }
             }
 
             return CalcularSueldoBruto() * porcentaje;
@@ -59,28 +57,17 @@ namespace CapaDatos
         {
             double porcentaje = 0.0;
 
-            switch (Salud)
+            for (int i = 0; i < NombresSalud.Length; i++)
             {
-                case "FONASA":
-                    porcentaje = 0.12;
+                if (NombresSalud[i] == Salud)
+                {
+                    porcentaje = PorcentajesSalud[i];
                     break;
-                case "CONSALUD":
-                    porcentaje = 0.13;
-                    break;
-                case "MASVIDA":
-                    porcentaje = 0.14;
-                    break;
-                case "BANMEDICA":
-                    porcentaje = 0.15;
-                    break;
-                default:
-                    porcentaje = 0.0;
-                    break;
+                }
             }
 
             return CalcularSueldoBruto() * porcentaje;
         }
-
 
         public double CalcularSueldoLiquido()
         {
