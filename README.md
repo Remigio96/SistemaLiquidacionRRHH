@@ -23,7 +23,7 @@ Aplicación de escritorio desarrollada en C# con arquitectura por capas (CapaDat
 - Historial de liquidaciones con búsqueda en tiempo real por nombre
 - Validaciones en tiempo real (solo letras para nombre, solo números para valores numéricos, etc.)
 - Sistema de autenticación con roles diferenciados
-- Precarga de 50 empleados y 10 liquidaciones de prueba
+- Precarga de 51 empleados y 10 liquidaciones de prueba
 - Persistencia de liquidaciones en archivo JSON
 
 ---
@@ -73,11 +73,11 @@ SolucionEvaENE/
 - [x] Validaciones integradas con ValidacionService
 - [x] Permisos diferenciados por rol
 - [x] Persistencia parcial en JSON (liquidaciones)
-- [ ] Persistencia en base de datos (simulada con lista en memoria)
+- [x] Almacenamiento en memoria (por diseño, sin base de datos en esta versión)
 
 ---
 
 ## Autor
 
 Desarrollado por **Remigio Stocker**
-Evaluación Nacional de Especialidad - PRO201, Taller de Programación 2026
+Evaluación Nacional de Especialidad - PRO201, Taller de Programación 2024

@@ -92,6 +92,13 @@ namespace CapaPresentacion
                     return;
                 }
 
+                if (!esEdicion && !ValidacionService.EsRutValido(txtRut.Text))
+                {
+                    MessageBox.Show("El RUT ingresado no es válido.\nFormato esperado: XX.XXX.XXX-X", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtRut.Focus();
+                    return;
+                }
+
                 if (!ValidacionService.ContieneSoloLetras(txtNombre.Text))
                 {
                     MessageBox.Show("El nombre debe contener solo letras.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
